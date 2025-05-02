@@ -1,4 +1,4 @@
-class TODO {
+<?php class TODO {
     private $title;
     private $description;
     private $completed;
@@ -28,3 +28,5 @@ class TODO {
     }
 
 }
+
+?>
