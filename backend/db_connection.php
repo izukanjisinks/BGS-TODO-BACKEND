@@ -12,7 +12,7 @@ try {
     // Set PDO error mode to exception
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    echo "Database connection successful!";
+    
 } catch (PDOException $e) {
     // Handle connection error
     die("Database connection failed: " . $e->getMessage());

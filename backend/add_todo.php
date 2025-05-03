@@ -1,7 +1,9 @@
 <?php 
 
-require_once 'backend/todo.php';
+require_once 'todo.php';
 require_once 'db_connection.php';
+require_once 'cors.php';
+
 
 class ADD_TODO {
     
@@ -13,10 +15,10 @@ class ADD_TODO {
         $this->pdo = $pdo;
     }
 
-    function add($todo): void {
-        $this->todo->setTitle($todo['title']);
-        $this->todo->setDescription($todo['description']);
-        $this->todo->setCompleted($todo['completed']);
+    function add($task): void {
+        $this->todo->setTitle($task['title']);
+        $this->todo->setDescription($task['description']);
+        $this->todo->setCompleted($task['completed']);
 
         $this->save_todo();
     }
@@ -32,6 +34,24 @@ class ADD_TODO {
         
     }
 
+}
+
+$todoHandler = new ADD_TODO($pdo);
+$rawData = file_get_contents("php://input");
+
+// Decode JSON to PHP associative array
+$data = json_decode($rawData, true);
+
+if ($data) {
+    // Now you can access fields like this:
+    $title = $data['title'];
+    $description = $data['description'];
+    $completed = $data['completed'];
+    $todoHandler->add([
+    'title' => $title,
+    'description' => $description,
+    'completed' => $completed
+]);
 }
 
 ?>

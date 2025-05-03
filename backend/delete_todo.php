@@ -1,6 +1,7 @@
 <?php 
 
 require_once 'db_connection.php';
+require_once 'cors.php';
 
 class DELETE_TODO {
     
@@ -23,6 +24,16 @@ class DELETE_TODO {
         
     }
 
+}
+
+$id = $_GET['id'] ?? null; // Get the id from the query string, if available
+if ($id) {
+    $todoHandler = new DELETE_TODO($pdo);
+    $todoHandler->delete($id);
+    
+    echo json_encode(["success" => "Todo deleted successfully"]);
+} else {
+    echo json_encode(["error" => "No ID provided"]);
 }
 
 

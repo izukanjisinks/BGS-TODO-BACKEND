@@ -1,6 +1,9 @@
 <?php 
-
 require_once 'db_connection.php';
+require_once 'cors.php';
+
+
+
 
 class GET_TODOS {
 
@@ -11,24 +14,17 @@ class GET_TODOS {
         $this->pdo = $pdo;
     }
 
-    function get_todos(): void {
+    function get_todos(): array {
         $sql = "SELECT * FROM todos";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $this->todos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        echo "<h2>{$this->todos[0]['description']}</h2>";
-
-        echo "<br>getting values from database<br>";
+        return $this->todos;
     }
-
-    
-
 }
 
+$todoHandler = new GET_TODOS($pdo);
+$todos = $todoHandler->get_todos();
+echo json_encode($todos);
 
-
-
-
-
-?>
