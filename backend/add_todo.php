@@ -16,7 +16,7 @@ class ADD_TODO {
     }
 
     function save_todo(): void {
-        $sql = "INSERT INTO todos (title, description, completed) VALUES (:title, :description, :completed, :user_id)";
+        $sql = "INSERT INTO todos (title, description, completed, user_id) VALUES (:title, :description, :completed, :user_id)";
         
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':user_id', $this->todo['user_id'], PDO::PARAM_INT);
@@ -42,7 +42,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $description = htmlspecialchars($data['description'], ENT_QUOTES, 'UTF-8');
         $completed = filter_var($data['completed'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 
-        new ADD_TODO($pdo,[
+       $addTodoHandler = new ADD_TODO($pdo,[
+        'user_id' => $user_id,  
+        'title' => $title,
+        'description' => $description,
+        'completed' => $completed
+     ]);
+
+     $addTodoHandler->save_todo();
+
+     echo json_encode([
         'user_id' => $user_id,  
         'title' => $title,
         'description' => $description,
