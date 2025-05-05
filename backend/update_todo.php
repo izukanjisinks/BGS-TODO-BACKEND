@@ -1,5 +1,5 @@
 <?php
-require_once 'cors.php';
+require_once './cors/cors.php';
 require_once 'db_connection.php';
 
 class UPDATE_TODO {
