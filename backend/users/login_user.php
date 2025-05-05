@@ -2,8 +2,7 @@
 require_once '../cors/cors.php';
 require_once '../users/users_db_connection.php';
 
-// Start session
-session_start();
+
 
 // Check if request method is POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -26,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_email'] = $user['email'];
 
-        echo json_encode(['status' => 'success', 'message' => 'Login successful.']);
+        echo json_encode(['status' => 'success', 'message' => 'Login successful.', 'user' => $user]);
     }else {
         echo json_encode(['status' => 'error', 'message' => 'Invalid email or password.']);
     }
