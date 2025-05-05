@@ -1,6 +1,6 @@
 <?php
-require
-require_once 'users_db_connection.php';
+require_once '../cors/cors.php';
+require_once '../users/users_db_connection.php';
 
     // Function to sanitize input
     function sanitizeInput($data) {
@@ -21,6 +21,17 @@ require_once 'users_db_connection.php';
         // Hash the password
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
+        $query = "SELECT * FROM users WHERE email = :email";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($existingUser['email'] == $email){
+            echo json_encode(['status' => 'error', 'message' => 'This email is already in use!']);
+            exit;
+        }else{
+
         try {
             $query = "INSERT INTO users (username, email, password) VALUES (:username, :email, :password)";
             $stmt = $pdo->prepare($query);
@@ -32,10 +43,13 @@ require_once 'users_db_connection.php';
             if ($stmt->execute()) {
                 echo json_encode(['status' => 'success', 'message' => 'User registered successfully.']);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Failed to register user.']);
+                echo json_encode(['status' => 'error', 'message' => 'Invalid email or password.']);
             }
         } catch (PDOException $e) {
             echo 'Database error: ';
         }
+        }
+
+        
     } 
 ?>

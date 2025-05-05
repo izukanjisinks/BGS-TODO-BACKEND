@@ -1,0 +1,34 @@
+<?php
+require_once '../cors/cors.php';
+require_once '../users/users_db_connection.php';
+
+// Start session
+session_start();
+
+// Check if request method is POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
+
+   
+    $query = "SELECT * FROM users WHERE email = :email";
+    $stmt = $pdo->prepare($query);
+    
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+    // Verify password
+    if ($user && password_verify($password, $user['password'])) {
+        // Set session variables
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_email'] = $user['email'];
+
+        echo json_encode(['status' => 'success', 'message' => 'Login successful.']);
+    }else {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid email or password.']);
+    }
+} 
+?>
