@@ -1,9 +1,8 @@
 <?php 
-require_once 'db_connection.php';
-require_once './cors/cors.php';
+require_once 'todo_db_connection.php';
+require_once '../cors/cors.php';
 
 class GET_TODOS {
-
     private $pdo;
     private $todos;
     private $user_id;
@@ -25,8 +24,13 @@ class GET_TODOS {
 }
 
 
-if($_SERVER['REQUEST_METHOD'] == 'GET'){
-    $user_id = $_GET['user_id'] ?? null;
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
+    $rawData = file_get_contents("php://input");
+
+    $data = json_decode($rawData, true);
+
+    $user_id = $data['user_id'];
    
 
     $todoHandler = new GET_TODOS($pdo, $user_id);
