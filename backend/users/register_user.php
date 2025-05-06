@@ -14,9 +14,13 @@ require_once '../users/users_db_connection.php';
         from frontend to remove 
         any unwanted characters
         */
-        $username = sanitizeInput($_POST['username'] ?? '');
-        $email = sanitizeInput($_POST['email'] ?? '');
-        $password = sanitizeInput($_POST['password'] ?? '');
+
+        $rawData = file_get_contents("php://input");
+        $data = json_decode($rawData, true);
+
+        $username = sanitizeInput($data['username'] ?? '');
+        $email = sanitizeInput($data['email'] ?? '');
+        $password = sanitizeInput($data['password'] ?? '');
 
         // Hash the password
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -27,7 +31,7 @@ require_once '../users/users_db_connection.php';
         $stmt->execute();
         $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if($existingUser['email'] == $email){
+        if($existingUser && $existingUser['email'] == $email){
             echo json_encode(['status' => 'error', 'message' => 'This email is already in use!']);
             exit;
         }else{
@@ -41,7 +45,8 @@ require_once '../users/users_db_connection.php';
             $stmt->bindParam(':password', $hashedPassword);
 
             if ($stmt->execute()) {
-                echo json_encode(['status' => 'success', 'message' => 'User registered successfully.']);
+
+                echo json_encode(['status' => 'success', 'message' => 'User registered successfully.']);          
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid email or password.']);
             }

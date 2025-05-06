@@ -6,9 +6,12 @@ require_once '../users/users_db_connection.php';
 
 // Check if request method is POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $rawData = file_get_contents("php://input");
+    $data = json_decode($rawData, true);
     
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
+    $email = trim($data['email']);
+    $password = trim($data['password']);
 
    
     $query = "SELECT * FROM users WHERE email = :email";
